@@ -62,3 +62,9 @@ def update_todo_handler(
         return todo
 
     return {}
+
+@app.delete("/todos/{todo_id}")
+def delete_todo_handler(todo_id: int):
+    todo_data.pop(todo_id, None)
+
+    return todo_data

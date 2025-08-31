@@ -7,3 +7,6 @@ from database.orm import ToDo
 
 def get_todos(session: Session) -> List[ToDo]:
     return list(session.scalars(select(ToDo))) # 젠체 ToDo를 조회해서 return
+
+def get_todo_by_todo_id(session: Session, todo_id: int) -> ToDo | None:
+    return session.scalar(select(ToDo).where(ToDo.id == todo_id))

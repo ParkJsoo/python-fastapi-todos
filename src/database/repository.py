@@ -1,6 +1,6 @@
 from typing import List # 스탠다드 라이브러리에서 타입 힌트를 위한 부분을 지원
 
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
 
 from database.orm import ToDo
@@ -24,3 +24,7 @@ def update_todo(session: Session, todo: ToDo) -> ToDo:
     session.refresh(instance=todo)
 
     return todo
+
+def delete_todo(session: Session, todo_id: int) -> None:
+    session.execute(delete(ToDo).where(ToDo.id == todo_id))
+    session.commit()

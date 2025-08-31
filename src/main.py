@@ -1,13 +1,13 @@
 from typing import List
 
 from fastapi import FastAPI, Body, HTTPException, Depends
-from pydantic import BaseModel
 from sqlalchemy.orm.session import Session
 
 from database.connection import get_db
 from database.orm import ToDo
 from database.repository import get_todos, get_todo_by_todo_id
-from schema.response import ListToDoResponse, ToDoSchema
+from schema.request import CreateToDoRequest
+from schema.response import ToDoListSchema, ToDoSchema
 
 app = FastAPI()
 
@@ -37,15 +37,15 @@ todo_data = {
 def get_todos_handler(
         order: str | None = None,
         session: Session = Depends(get_db),
-) -> ListToDoResponse:
+) -> ToDoListSchema:
     todos: List[ToDo] = get_todos(session=session)
 
     if order and order == "DESC":
-        return ListToDoResponse(
+        return ToDoListSchema(
             todos=[ToDoSchema.from_orm(todo) for todo in todos[::-1]]
         )
 
-    return ListToDoResponse(
+    return ToDoListSchema(
         todos=[ToDoSchema.from_orm(todo) for todo in todos]
         # Python의 List Comprehension 문법: list를 짧고 간결하게 생성하는 방법
     )
@@ -61,11 +61,6 @@ def get_todo_handler(
         return ToDoSchema.from_orm(todo)
 
     raise HTTPException(status_code=404, detail="ToDo Not Found")
-
-class CreateToDoRequest(BaseModel):
-    id: int
-    contents: str
-    is_done: bool
 
 @app.post("/todos", status_code=201)
 def create_todo_handler(request: CreateToDoRequest):

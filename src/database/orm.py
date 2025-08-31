@@ -1,6 +1,8 @@
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import declarative_base
 
+from schema.request import CreateToDoRequest
+
 Base = declarative_base()
 # Base 클래스를 상속 받아서 데이터베이스 테이블을 클래스로 모델링
 
@@ -20,3 +22,10 @@ class ToDo(Base):
     # f-string: 문자열 안에서 변수나 표현식을 간결하게 삽입할 수 있는 문법
     # 문자열 앞에 f를 붙이고, 중괄호 {} 안에 변수나 수식 작성
     # javascript의 템플릿 리터럴(``백틱 + ${})와 비슷
+
+    @classmethod
+    def create(cls, request: CreateToDoRequest) -> "ToDo":
+        return cls(
+            contents=request.contents,
+            is_done=request.is_done,
+        )

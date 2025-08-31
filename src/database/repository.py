@@ -17,3 +17,10 @@ def create_todo(session: Session, todo: ToDo) -> ToDo:
     session.refresh(instance=todo) # 데이터베이스에서 데이터 읽음, todo_id 결정 및 반영
 
     return todo
+
+def update_todo(session: Session, todo: ToDo) -> ToDo:
+    session.add(instance=todo)
+    session.commit()
+    session.refresh(instance=todo)
+
+    return todo
